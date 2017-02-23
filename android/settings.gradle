@@ -1,0 +1,3 @@
+rootProject.name = 'KeyboardAvoidance'
+
+include ':app'
