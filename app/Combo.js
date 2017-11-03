@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, Image, Animated, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { View, TextInput,Text, ScrollView,Image,Button, Animated,TouchableOpacity, Keyboard, KeyboardAvoidingView,Platform } from 'react-native';
 import styles, { IMAGE_HEIGHT, IMAGE_HEIGHT_SMALL } from './styles';
 import logo from './logo.png';
 
@@ -11,8 +11,14 @@ class Demo extends Component {
   }
 
   componentWillMount () {
+   if (Platform.OS=='ios'){
     this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+   }else{
+    this.keyboardWillShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+    this.keyboardWillHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+   }
+
   }
 
   componentWillUnmount() {
@@ -34,21 +40,45 @@ class Demo extends Component {
     }).start();
   };
 
+
+  keyboardDidShow = (event) => {
+    Animated.timing(this.imageHeight, {
+      toValue: IMAGE_HEIGHT_SMALL,
+    }).start();
+  };
+
+  keyboardDidHide = (event) => {
+    Animated.timing(this.imageHeight, {
+      toValue: IMAGE_HEIGHT,
+    }).start();
+  };
+
   render() {
     return (
-      <KeyboardAvoidingView
+      <View style={{flex:1,backgroundColor:'#4c69a5',alignItems:'center'}}>
+       
+       <Animated.Image source={logo} style={[styles.logo, { height: this.imageHeight }]} />
+       <ScrollView style={{flex:1}}>
+      
+         <KeyboardAvoidingView
         style={styles.container}
         behavior="padding"
       >
-          <Animated.Image source={logo} style={[styles.logo, { height: this.imageHeight }]} />
+      <TextInput
+            placeholder="Name"
+            style={styles.input}
+          />
+
+          <TextInput
+            placeholder="Surname"
+            style={styles.input}
+          />
           <TextInput
             placeholder="Email"
             style={styles.input}
           />
-          <TextInput
-            placeholder="Username"
-            style={styles.input}
-          />
+
+
           <TextInput
             placeholder="Password"
             style={styles.input}
@@ -57,9 +87,16 @@ class Demo extends Component {
             placeholder="Confirm Password"
             style={styles.input}
           />
+          
       </KeyboardAvoidingView>
+      </ScrollView>
+      <View>
+      <TouchableOpacity style={styles.register}><Text>Done</Text></TouchableOpacity>
+      </View>
+      </View>
     );
   }
 };
 
 export default Demo;
+
